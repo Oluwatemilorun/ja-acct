@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:jaacct/pages/signup.dart';
+// import 'package:jaacct/pages/signup.dart';
 
 class Login extends StatefulWidget {
     @override
@@ -130,7 +130,8 @@ class _Login extends State<Login> {
     }
 
     void _goSignup () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
+        Navigator.pushNamed(context, '/signup');
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
     }
 
     void _processLogin () {
