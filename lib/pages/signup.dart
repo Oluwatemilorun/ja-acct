@@ -200,7 +200,8 @@ class _Signup extends State<Signup> {
                                                         case 'signup/user':
                                                             return InformationSetup(
                                                                 onSignupComplete: () {
-                                                                    _showPrevBtn('signup/user', context);
+                                                                    widget.userWentLive();
+                                                                    _goHome();
                                                                 }
                                                             );
                                                             break;
@@ -266,6 +267,10 @@ class _Signup extends State<Signup> {
     }
 
     void _goLogin () {
+        Navigator.pop(context);
+    }
+
+    void _goHome () {
         Navigator.pop(context);
     }
 }

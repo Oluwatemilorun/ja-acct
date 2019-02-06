@@ -23,9 +23,15 @@ class _MyApp extends State<MyApp> {
             routes: {
                 '/': (BuildContext context) => _userLive ? Home() : Login(),
                 '/login': (BuildContext context) => Login(),
-                '/signup': (BuildContext context) => Signup()
+                '/signup': (BuildContext context) => Signup(userWentLive: _userWentLive)
             },
             // home: Login(),
         );
+    }
+
+    void _userWentLive () {
+        setState(() {
+            _userLive = true;
+        });
     }
 }
