@@ -5,13 +5,24 @@ import 'package:jaacct/widgets/_signup/password_setup.dart';
 import 'package:jaacct/widgets/_signup/user_information_setup.dart';
 
 class Signup extends StatefulWidget {
+
+    final userWentLive;
+
+    Signup({
+        this.userWentLive
+    });
+
     @override
     _Signup createState() => _Signup();
 }
 
 class _Signup extends State<Signup> {
 
-    Color _defaultColor = Color.fromRGBO(51, 128, 198, 1);
+    Color  _defaultColor = Color.fromRGBO(51, 128, 198, 1);
+    Color _otherColor = Color.fromRGBO(255, 255, 255, 0.6);
+
+    // ColorTween _animateColor = ColorTween(begin: Color.fromRGBO(255, 255, 255, 0.6), end: Color.fromRGBO(255, 255, 255, 0.6));
+
     BuildContext _stepContext;
     int _currentStep = 1;
 
@@ -91,7 +102,14 @@ class _Signup extends State<Signup> {
                                                                     shape: BoxShape.circle,
                                                                     color: Color.fromRGBO(255, 255, 255, 0.6),
                                                                 ),
-                                                                child: Icon(IconData(0xe7fd, fontFamily: 'MaterialIcons'), color: Colors.black54, size: 36,)
+                                                                child:
+                                                                     _currentStep == 1 ?
+                                                                        Icon(IconData(0xe7fd, fontFamily: 'MaterialIcons'), color: Colors.black54, size: 36) :
+                                                                    _currentStep == 2 ?
+                                                                        Icon(IconData(0xe897, fontFamily: 'MaterialIcons'), color: Colors.black54, size: 36) :
+                                                                    _currentStep == 3 ?
+                                                                        Icon(IconData(0xe87c, fontFamily: 'MaterialIcons'), color: Colors.black54, size: 36) :
+                                                                        Icon(IconData(0xe000, fontFamily: 'MaterialIcons'), color: Colors.black54, size: 36)
                                                             )
                                                         ])
                                                     )
@@ -100,7 +118,14 @@ class _Signup extends State<Signup> {
                                             Row(children: <Widget>[
                                                 Expanded(child: Container(
                                                     alignment: Alignment.center,
-                                                    child: Text('User Information', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center),
+                                                    child: 
+                                                        _currentStep == 1 ?
+                                                            Text('Account Setup', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center) :
+                                                        _currentStep == 2 ?
+                                                            Text('Setup Password', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center) :
+                                                        _currentStep == 3 ?
+                                                            Text('User Information', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center) :
+                                                            Text('Unknown', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center)
                                                 ))
                                             ]),
                                             Row(children: <Widget>[
@@ -114,12 +139,12 @@ class _Signup extends State<Signup> {
                                                                 Positioned(
                                                                     left: 0,
                                                                     top: 6,
-                                                                    child: Container(width: 90, height: 2, decoration: BoxDecoration(color: _defaultColor)),
+                                                                    child: Container(width: 90, height: 2, decoration: BoxDecoration(color: _currentStep >= 2 ? _defaultColor : _otherColor)),
                                                                 ),
                                                                 Positioned(
                                                                     right: 0,
                                                                     top: 6,
-                                                                    child: Container(width: 90, height: 2, decoration: BoxDecoration(color: _defaultColor)),
+                                                                    child: Container(width: 90, height: 2, decoration: BoxDecoration(color: _currentStep == 3 ? _defaultColor : _otherColor)),
                                                                 ),
                                                                 Positioned(
                                                                     left: 0,
@@ -128,11 +153,11 @@ class _Signup extends State<Signup> {
                                                                 Positioned(
                                                                     left: 80,
                                                                     // right: 0,
-                                                                    child: Container(width: 15, height: 15, decoration: BoxDecoration(color: _defaultColor, shape: BoxShape.circle)),
+                                                                    child: Container(width: 15, height: 15, decoration: BoxDecoration(color: _currentStep >= 2 ? _defaultColor : _otherColor, shape: BoxShape.circle)),
                                                                 ),
                                                                 Positioned(
                                                                     right: 0,
-                                                                    child: Container(width: 15, height: 15, decoration: BoxDecoration(color: _defaultColor, shape: BoxShape.circle)),
+                                                                    child: Container(width: 15, height: 15, decoration: BoxDecoration(color: _currentStep == 3 ? _defaultColor : _otherColor, shape: BoxShape.circle)),
                                                                 ),
                                                             ],
                                                         ),
@@ -148,6 +173,7 @@ class _Signup extends State<Signup> {
                             children: <Widget>[
                                 Expanded(child: Container(
                                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 35),
+                                    margin: const EdgeInsets.only(top: 55),
                                     height: 230,
                                     child: Navigator(
                                         initialRoute: 'signup/account',
@@ -167,7 +193,7 @@ class _Signup extends State<Signup> {
                                                         case 'signup/password':
                                                             return PasswordSetup(
                                                                 onStepComplete: () {
-                                                                     _showPrevBtn('signup/password', context);
+                                                                     _showPrevBtn('signup/user', context);
                                                                 }
                                                             );
                                                             break;
@@ -175,7 +201,6 @@ class _Signup extends State<Signup> {
                                                             return InformationSetup(
                                                                 onSignupComplete: () {
                                                                     _showPrevBtn('signup/user', context);
-                                                                    Navigator.of(context).pop();
                                                                 }
                                                             );
                                                             break;
@@ -211,11 +236,9 @@ class _Signup extends State<Signup> {
     void _prevStep () {
         Navigator.of(_stepContext).pop();
 
-        if (_currentStep == 2) {
-            setState(() {
-                _currentStep = 1;
-            });
-        }
+        setState(() {
+            _currentStep -= 1;
+        });
     }
 
     void _showPrevBtn (String path, BuildContext context) {
