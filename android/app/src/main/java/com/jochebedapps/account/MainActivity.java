@@ -1,4 +1,4 @@
-package com.example.jaacct;
+package com.jochebedapps.account;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
