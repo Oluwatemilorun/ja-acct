@@ -19,9 +19,8 @@ class _Login extends State<Login> {
                         image: AssetImage('lib/assets/img/background/001.png')
                     )
                 ),
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                    children: <Widget>[
+                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
+                child: ListView(children: <Widget> [
                         Row(
                             children: <Widget>[
                                 Expanded(

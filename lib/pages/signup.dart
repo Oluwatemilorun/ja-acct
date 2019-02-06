@@ -37,8 +37,7 @@ class _Signup extends State<Signup> {
                         image: AssetImage('lib/assets/img/background/001.png')
                     )
                 ),
-                child: Column(
-                    children: <Widget>[
+                child: ListView(children: <Widget> [
                         Row(
                             children: <Widget>[
                                 Expanded(child: Container(
