@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:jaacct/widgets/_signup/account_setup.dart';
+import 'package:jaacct/widgets/_signup/password_setup.dart';
+import 'package:jaacct/widgets/_signup/user_information_setup.dart';
+
 class Signup extends StatefulWidget {
     @override
     _Signup createState() => _Signup();
@@ -8,6 +12,8 @@ class Signup extends StatefulWidget {
 class _Signup extends State<Signup> {
 
     Color _defaultColor = Color.fromRGBO(51, 128, 198, 1);
+    BuildContext _stepContext;
+    int _currentStep = 1;
 
     @override
     Widget build(BuildContext context) {
@@ -33,17 +39,20 @@ class _Signup extends State<Signup> {
                                     child: Column(
                                         children: <Widget>[
                                             Row(children: <Widget>[
-                                                MaterialButton(
-                                                    height: 32,
-                                                    minWidth: 20,
-                                                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-                                                    splashColor: Color.fromRGBO(0, 0, 0, 0.2),
-                                                    child: Row(children: <Widget>[
-                                                        Icon(IconData(0xe5cb, fontFamily: 'MaterialIcons', matchTextDirection: true)),
-                                                        Text('Prev')
-                                                    ]),
-                                                    onPressed: () => '',
-                                                ),
+                                                _currentStep > 1 ?
+                                                    MaterialButton(
+                                                        height: 32,
+                                                        minWidth: 20,
+                                                        padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                                                        splashColor: Color.fromRGBO(0, 0, 0, 0.2),
+                                                        child: Row(children: <Widget>[
+                                                            Icon(IconData(0xe5cb, fontFamily: 'MaterialIcons', matchTextDirection: true)),
+                                                            Text('Prev')
+                                                        ]),
+                                                        onPressed: _prevStep,
+                                                    )
+                                                :
+                                                   Container() ,
                                                 Spacer(),
                                                 MaterialButton(
                                                     height: 32,
@@ -135,10 +144,102 @@ class _Signup extends State<Signup> {
                                 ))
                             ],
                         ),
+                        Row(
+                            children: <Widget>[
+                                Expanded(child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 35),
+                                    height: 230,
+                                    child: Navigator(
+                                        initialRoute: 'signup/account',
+                                        onGenerateRoute: (RouteSettings settings) {
+                                            return PageRouteBuilder(
+                                                opaque: false,
+                                                settings: settings, 
+                                                pageBuilder: (BuildContext context, _, __) {
+                                                    switch (settings.name) {
+                                                        case 'signup/account':
+                                                            return AccountSetup(
+                                                                onStepComplete: () {
+                                                                     _showPrevBtn('signup/password', context);
+                                                                }
+                                                            );
+                                                            break;
+                                                        case 'signup/password':
+                                                            return PasswordSetup(
+                                                                onStepComplete: () {
+                                                                     _showPrevBtn('signup/password', context);
+                                                                }
+                                                            );
+                                                            break;
+                                                        case 'signup/user':
+                                                            return InformationSetup(
+                                                                onSignupComplete: () {
+                                                                    _showPrevBtn('signup/user', context);
+                                                                    Navigator.of(context).pop();
+                                                                }
+                                                            );
+                                                            break;
+                                                        default:
+                                                            throw Exception('Invalid route: ${settings.name}');
+                                                    }
+                                                },
+                                                transitionsBuilder: (___, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+                                                    return FadeTransition(
+                                                        opacity: animation,
+                                                        child: SlideTransition(
+                                                            position: Tween<Offset>(begin: Offset(3, 0), end: Offset(-0, 0)).animate(animation),
+                                                            child: SlideTransition(
+                                                                position: Tween<Offset>(begin: Offset(-0, 0), end: Offset(-3, 0)).animate(secondaryAnimation),
+                                                                child: child,
+                                                            )
+                                                        )
+                                                    );
+                                                },
+                                                transitionDuration: Duration(milliseconds: 500)
+                                            );
+                                        }
+                                    )
+                                ))
+                            ]
+                        )
                     ],
                 )
             ),
         );
+    }
+
+    void _prevStep () {
+        Navigator.of(_stepContext).pop();
+
+        if (_currentStep == 2) {
+            setState(() {
+                _currentStep = 1;
+            });
+        }
+    }
+
+    void _showPrevBtn (String path, BuildContext context) {
+        _stepContext = context;
+            
+        switch (path) {
+            case 'signup/account':
+                setState(() {
+                    _currentStep = 1;
+                });
+                break;
+            case 'signup/password':
+                setState(() {
+                    _currentStep = 2;
+                });
+                break;
+            case 'signup/user':
+                setState(() {
+                    _currentStep = 3;
+                });
+                break;
+            default:
+                throw Exception('invalid step $_currentStep');
+        }
     }
 
     void _goLogin () {
